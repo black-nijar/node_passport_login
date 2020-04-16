@@ -14,7 +14,7 @@ router.get("/register", (req, res) => {
 //Register
 router.post("/register", (req, res) => {
   const { name, email, password, password2 } = req.body;
-  console.log(name, email, password, password2)
+  console.log(name, email, password, password2);
   let errors = [];
 
   if (!name || !email || !password || !password2) {
@@ -55,8 +55,21 @@ router.post("/register", (req, res) => {
           password,
         });
         console.log(newUser);
-        newUser.save()
-        res.send("Hello");
+
+        // Hash pw
+        bcrypt.genSalt(10, (err, salt) =>
+          bcrypt.hash(newUser.password, salt, (err, hash) => {
+            if (err) throw err;
+
+            // Set pw to hash
+            newUser.password = hash;
+            // Save user
+            newUser
+              .save()
+              .then((user) => res.redirect("/login"))
+              .catch((err) => console.log(err));
+          })
+        );
       }
     });
   }
