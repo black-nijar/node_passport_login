@@ -61,12 +61,18 @@ router.post("/register", (req, res) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
             if (err) throw err;
 
-            // Set pw to hash
+            // Set pw to hashed
             newUser.password = hash;
             // Save user
             newUser
               .save()
-              .then((user) => res.redirect("/login"))
+              .then((user) => {
+                req.flash(
+                  "success_msg",
+                  "You are now registered and can log in"
+                );
+                res.redirect("/users/login");
+              })
               .catch((err) => console.log(err));
           })
         );
