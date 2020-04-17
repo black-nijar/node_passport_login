@@ -9,12 +9,11 @@ module.exports = (passport) => {
   passport.use(
     new LocalStrategy({ usernameField: "email" }, (email, password, done) => {
       // Match user
-
       User.findOne({ email: email })
         .then((user) => {
           if (!user) {
             return done(null, false, {
-              message: "That email is not registerd",
+              message: "That email is not registered",
             });
           }
 
@@ -33,12 +32,12 @@ module.exports = (passport) => {
     })
   );
   passport.serializeUser((user, done) => {
-    done(null, user.id)
+    done(null, user.id);
   });
 
   passport.deserializeUser((id, done) => {
     User.findById(id, (err, user) => {
       done(err, user);
-    })
-  })
+    });
+  });
 };
